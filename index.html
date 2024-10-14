@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .calculator {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Age Calculator</h1>
+        <label for="dob">Enter your Date of Birth:</label>
+        <input type="date" id="dob" class="form-control">
+        <button class="btn btn-primary" onclick="calculateAge()">Calculate</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            let dob = document.getElementById("dob").value;
+
+            if (!dob) {
+                document.getElementById("result").innerHTML = "Please enter a valid date.";
+                return;
+            }
+
+            let birthDate = new Date(dob);
+            let currentDate = new Date();
+
+            let ageYears = currentDate.getFullYear() - birthDate.getFullYear();
+            let ageMonths = currentDate.getMonth() - birthDate.getMonth();
+            let ageDays = currentDate.getDate() - birthDate.getDate();
+
+            if (ageDays < 0) {
+                ageMonths--;
+                ageDays += new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
+            }
+            if (ageMonths < 0) {
+                ageYears--;
+                ageMonths += 12;
+            }
+
+            let nextBirthday = new Date(currentDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+            if (nextBirthday < currentDate) {
+                nextBirthday.setFullYear(currentDate.getFullYear() + 1);
+            }
+
+            let timeDiff = nextBirthday - currentDate;
+            let daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            let nextBirthdayDay = dayNames[nextBirthday.getDay()];
+
+            document.getElementById("result").innerHTML = `
+                Your age is ${ageYears} years, ${ageMonths} months, and ${ageDays} days.<br>
+                Your next birthday is on ${nextBirthday.toLocaleDateString()} (${nextBirthdayDay}).<br>
+                ${daysRemaining} days remaining until your next birthday.
+            `;
+        }
+    </script>
+</body>
+</html>
